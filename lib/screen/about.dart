@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//coba tambah komen
 class About extends StatelessWidget {
   List<Widget> cats() {
     List<Widget> temp = [];
