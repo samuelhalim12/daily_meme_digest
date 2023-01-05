@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:daily_meme_digest/class/recipe.dart';
 
-//coba komen
 class AddRecipe extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -16,7 +15,6 @@ class _AddRecipeState extends State<AddRecipe> {
   // final TextEditingController _categoryId = TextEditingController();
   int _charLeft = 200;
   String _recipeCategory = "Traditional";
-  
 
   @override
   void initState() {
@@ -90,8 +88,7 @@ class _AddRecipeState extends State<AddRecipe> {
                     name: _recipeNameController.text,
                     photo: _recipePhotoController.text,
                     desc: _recipeDescController.text,
-                    category: _recipeCategory.toString())
-                    );
+                    category: _recipeCategory.toString()));
                 showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
@@ -107,7 +104,6 @@ class _AddRecipeState extends State<AddRecipe> {
               },
               icon: const Icon(Icons.add),
               label: const Text("Submit")),
-          
         ],
       ),
     );
