@@ -1,28 +1,24 @@
+import 'package:daily_meme_digest/screen/create_meme.dart';
 import 'package:flutter/material.dart';
-import 'package:daily_meme_digest/screen/about.dart';
-import 'package:daily_meme_digest/screen/add_recipe.dart';
-import 'package:daily_meme_digest/screen/animasi.dart';
-import 'package:daily_meme_digest/screen/basket.dart';
-import 'package:daily_meme_digest/screen/history.dart';
 import 'package:daily_meme_digest/screen/home.dart';
 import 'package:daily_meme_digest/screen/leaderboard.dart';
-import 'package:daily_meme_digest/screen/newpopmovie.dart';
-import 'package:daily_meme_digest/screen/quiz.dart';
-import 'package:daily_meme_digest/screen/search.dart';
-import 'package:daily_meme_digest/screen/studentlist.dart';
-import 'package:daily_meme_digest/screen/my_courses.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:daily_meme_digest/screen/popular_movie.dart';
-import 'package:daily_meme_digest/screen/popularactor.dart';
+import 'package:daily_meme_digest/screen/mycreation.dart';
 import 'package:daily_meme_digest/screen/login.dart';
-import 'package:daily_meme_digest/screen/viewcart.dart';
+import 'package:daily_meme_digest/screen/settings.dart';
 
+String name = "";
 String activeuser = "";
 
 Future<String> checkUser() async {
   final prefs = await SharedPreferences.getInstance();
   String userID = prefs.getString("user_id") ?? '';
   return userID;
+}
+Future<String> checkName() async {
+  final prefs = await SharedPreferences.getInstance();
+  String full_name = prefs.getString("full_name") ?? '';
+  return full_name;
 }
 
 void main() {
@@ -33,6 +29,14 @@ void main() {
       runApp(MyLogin());
     else {
       activeuser = result;
+      runApp(MyApp());
+    }
+  });
+  checkName().then((String result) {
+    if (result == '')
+      runApp(MyLogin());
+    else {
+      name = result;
       runApp(MyApp());
     }
   });
@@ -57,18 +61,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
       routes: {
-        'about': (context) => About(),
-        'basket': (context) => Basket(),
-        'studentlist': (context) => StudentList(),
-        'courselist': (context) => CourseList(),
-        'add_recipe': (context) => AddRecipe(),
-        'quiz': (context) => Quiz(),
-        'leaderboard': (context) => Leaderboard(),
-        'animasi': (context) => Animasi(),
-        "popular_movies": (context) => PopularMovie(),
-        "popular_actor": (context) => PopularActor(),
-        'newpopmovie': (context) => NewPopMovie(),
-        'shopingcart': (context) => ViewCart(),
+        'Home': (context) => Home(),
+        'MyCreation': (context) => MyCreation(),
+        'LeaderBoard': (context) => Leaderboard(),
+        'Settings': (context) => Settings(),
+        'creatememe': (context) => CreateMeme(),
       },
     );
   }
@@ -95,8 +92,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int _currentIndex = 0;
-  final List<Widget> _screens = [Home(), Search(), History()];
-  final List<String> _title = ['Home', 'Search', 'History'];
+  final List<Widget> _screens = [
+    Home(),
+    MyCreation(),
+    Leaderboard(),
+    Settings()
+  ];
   Runes smileEmoji = Runes('\u{1F60A}');
   Runes angryEmoji = Runes('\u{1F620}');
   String? emoji;
@@ -132,20 +133,20 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(_title[_currentIndex]),
+        title: Text("Daily Meme Digest"),
       ),
       body: _screens[_currentIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+            Navigator.pushNamed(
+              context,
+              "creatememe"
+            );
+          },
+        tooltip: 'New Meme',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
       drawer: myDrawer(),
-      persistentFooterButtons: <Widget>[
-        ElevatedButton(
-            onPressed: () {}, child: const Icon(Icons.skip_previous)),
-        ElevatedButton(onPressed: () {}, child: const Icon(Icons.skip_next))
-      ],
       bottomNavigationBar: myBottomNavBar(),
     );
   }
@@ -210,12 +211,16 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            label: "Search",
-            icon: Icon(Icons.search),
+            label: "My Creation",
+            icon: Icon(Icons.emoji_emotions_outlined),
           ),
           BottomNavigationBarItem(
-            label: "History",
-            icon: Icon(Icons.history),
+            label: "Leaderboard",
+            icon: Icon(Icons.leaderboard),
+          ),
+          BottomNavigationBarItem(
+            label: "Settings",
+            icon: Icon(Icons.settings),
           ),
         ],
         onTap: (int index) {
@@ -231,99 +236,51 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-              accountName: Text("samuel"),
+              accountName: Text("$name"),
               accountEmail: Text("$activeuser"),
               currentAccountPicture: CircleAvatar(
                   backgroundImage: NetworkImage("https://i.pravatar.cc/150"))),
           ListTile(
-            title: new Text("Inbox"),
-            leading: new Icon(Icons.inbox),
-          ),
-          ListTile(
-            title: new Text("Popular Movies"),
-            leading: new Icon(Icons.movie),
+            title: new Text("Home"),
+            leading: new Icon(Icons.home),
             onTap: () {
-              Navigator.pushNamed(context, "popular_movies");
+              // Navigator.pushNamed(context, "Home");
+              setState(() {
+                _currentIndex = 0;
+              });
+              Navigator.pop(context);
             },
           ),
           ListTile(
-            title: new Text("New Popular Movies"),
-            leading: new Icon(Icons.movie_creation),
+            title: new Text("My Creation"),
+            leading: new Icon(Icons.emoji_emotions_outlined),
             onTap: () {
-              Navigator.pushNamed(context, "newpopmovie");
+              // Navigator.pushNamed(context, "MyCreation");
+              setState(() {
+                _currentIndex = 1;
+              });
+              Navigator.pop(context);
             },
           ),
           ListTile(
-              title: Text("Shopping Cart"),
-              leading: Icon(Icons.animation),
-              onTap: () {
-                Navigator.pushNamed(context, "shopingcart");
-              }),
-          ListTile(
-            title: new Text("Popular Actor"),
-            leading: new Icon(Icons.people),
+            title: new Text("LeaderBoard"),
+            leading: new Icon(Icons.leaderboard),
             onTap: () {
-              Navigator.pushNamed(context, "popular_actor");
+              // Navigator.pushNamed(context, "LeaderBoard");
+              setState(() {
+                _currentIndex = 2;
+              });
+              Navigator.pop(context);
             },
           ),
           ListTile(
-            title: new Text("My Basket  "),
-            leading: new Icon(Icons.shopping_basket),
+            title: new Text("Settings"),
+            leading: new Icon(Icons.settings),
             onTap: () {
-              Navigator.pushNamed(context, "basket");
-            },
-          ),
-          ListTile(
-            title: new Text("Add Recipe"),
-            leading: new Icon(Icons.add),
-            onTap: () {
-              Navigator.pushNamed(context, "add_recipe");
-            },
-          ),
-          ListTile(
-            title: Text("Promotions"),
-            leading: Icon(Icons.sell),
-          ),
-          ListTile(
-            title: const Text("About"),
-            leading: const Icon(Icons.help),
-            onTap: () {
-              Navigator.pushNamed(context, "about");
-            },
-          ),
-          ListTile(
-            title: const Text("Student List"),
-            leading: const Icon(Icons.list),
-            onTap: () {
-              Navigator.pushNamed(context, "studentlist");
-            },
-          ),
-          ListTile(
-            title: const Text("Course List"),
-            leading: const Icon(Icons.list),
-            onTap: () {
-              Navigator.pushNamed(context, "courselist");
-            },
-          ),
-          ListTile(
-            title: const Text("Quiz"),
-            leading: const Icon(Icons.quiz),
-            onTap: () {
-              Navigator.pushNamed(context, "quiz");
-            },
-          ),
-          ListTile(
-            title: const Text("Leaderboard"),
-            leading: const Icon(Icons.leaderboard),
-            onTap: () {
-              Navigator.pushNamed(context, "leaderboard");
-            },
-          ),
-          ListTile(
-            title: const Text("Animation"),
-            leading: const Icon(Icons.animation),
-            onTap: () {
-              Navigator.pushNamed(context, "animasi");
+              Navigator.pushNamed(context, "Settings");
+              // setState(() {
+              //   _currentIndex = 3;
+              // });
             },
           ),
           ListTile(
@@ -342,6 +299,8 @@ class _MyHomePageState extends State<MyHomePage> {
 void doLogout() async {
   final prefs = await SharedPreferences.getInstance();
   prefs.remove("user_id");
+  prefs.remove("full_name");
+  prefs.remove("id_user");
   main();
 }
 

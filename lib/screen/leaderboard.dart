@@ -17,15 +17,12 @@ class Leaderboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Course Detail"),
-      ),
       body: SingleChildScrollView(
           child: Column(
         children: [
-            Text("Top score : " + _top_point.toString()),
-            Divider(height: 20),
-            Text("Top user :" + _top_user.toString())
+            // Text("Top score : " + _top_point.toString()),
+            // Divider(height: 20),
+            // Text("Top user :" + _top_user.toString())
         ],
       )),
     );

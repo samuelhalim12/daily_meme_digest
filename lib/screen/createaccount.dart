@@ -2,14 +2,14 @@
 
 import 'dart:convert';
 
-import 'package:daily_meme_digest/screen/createaccount.dart';
+import 'package:daily_meme_digest/screen/login.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 import '../main.dart';
 
-class MyLogin extends StatelessWidget {
+class MyCreateAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,47 +17,54 @@ class MyLogin extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Login(),
     );
   }
 }
 
-class Login extends StatefulWidget {
+class CreateAccount extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _LoginState();
+    return _CreateAccountState();
   }
 }
 
-class _LoginState extends State<Login> {
-  late String _user_id;
+class _CreateAccountState extends State<CreateAccount> {
+  late String _username;
   late String _user_password;
-  late String error_login;
+  late String _confirm_user_password;
+  late String _error_regist;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _username = "";
     _user_password = "";
-    error_login = "";
+    _confirm_user_password = "";
+    _error_regist = "";
   }
 
-  void doLogin() async {
+  void doRegist() async {
     final response = await http.post(
-        Uri.parse("https://ubaya.fun/flutter/160419077/login2.php"),
-        body: {'username': _user_id, 'user_password': _user_password});
+        Uri.parse("https://ubaya.fun/flutter/160419077/regist.php"),
+        body: {
+          'username': _username,
+          'password': _user_password,
+          'confirm_password': _confirm_user_password
+        });
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
       if (json['result'] == 'success') {
         final prefs = await SharedPreferences.getInstance();
-        prefs.setInt("id_user", json['id_user']);
-        prefs.setString("user_id", _user_id);
-        prefs.setString("full_name", json['name']);
-        prefs.setString("user_name", json['username']);
-        main();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Login(),
+          ),
+        );
       } else {
         setState(() {
-          error_login = "Incorrect user or password";
+          _error_regist = "Password and Confirm Password not same!";
         });
       }
     } else {
@@ -69,7 +76,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login'),
+          title: Text('Create Account'),
         ),
         body: Container(
           height: 700,
@@ -81,22 +88,18 @@ class _LoginState extends State<Login> {
               color: Colors.white,
               boxShadow: [BoxShadow(blurRadius: 20)]),
           child: Column(children: [
-            Image(
-                image: AssetImage("assets/images/trollface.png"),
-                fit: BoxFit.fitWidth,
-                width: 200,
-                height: 240),
             Text("Daily Meme Digest"),
+            Text("Create Account"),
             Padding(
               padding: EdgeInsets.all(10),
               child: TextField(
                 onChanged: (value) {
-                  _user_id = value;
+                  _username = value;
                 },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Username',
-                    hintText: 'Enter valid username'),
+                    hintText: 'Enter username'),
               ),
             ),
             Padding(
@@ -110,12 +113,26 @@ class _LoginState extends State<Login> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
-                    hintText: 'Enter secure password'),
+                    hintText: 'Enter password'),
               ),
             ),
-            if (error_login != "")
+            Padding(
+              padding: EdgeInsets.all(10),
+              //padding: EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                onChanged: (value) {
+                  _confirm_user_password = value;
+                },
+                obscureText: true,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Repeat Password',
+                    hintText: 'Repeat password'),
+              ),
+            ),
+            if (_error_regist != "")
               Text(
-                error_login,
+                _error_regist,
                 style: TextStyle(color: Colors.red),
               ),
             Padding(
@@ -128,38 +145,14 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(20)),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CreateAccount(),
-                            ),
-                          );
+                      doRegist();
                     },
                     child: Text(
                       'Create Account',
                       style: TextStyle(color: Colors.white, fontSize: 25),
                     ),
                   ),
-                )),
-            Padding(
-                padding: EdgeInsets.all(10),
-                child: Container(
-                  height: 50,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      doLogin();
-                    },
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
-                  ),
-                )),
+                ))
           ]),
         ));
   }
