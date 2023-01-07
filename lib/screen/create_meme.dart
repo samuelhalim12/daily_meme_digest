@@ -19,6 +19,7 @@ class _CreateMemeState extends State<CreateMeme> {
   String topText = "";
   String botText = "";
   String urlPic = "https://ubaya.fun/blank.jpg";
+  late int _author_id;
   @override
   void initState() {
     super.initState();
@@ -35,20 +36,26 @@ class _CreateMemeState extends State<CreateMeme> {
       teks_bawah: '',
       author_id: '',
       like_count: 0);
-  Future<String> checkId() async {
+  Future<int> checkId() async {
     final prefs = await SharedPreferences.getInstance();
-    String userID = prefs.getString("id_user") ?? '';
+    int userID = prefs.getInt("id_user") ?? 0;
     return userID;
   }
 
   void onSubmit() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // _author_id = checkId().toString();
+    // print(_author_id);
+    checkId().then((int result) {
+      _author_id = result;
+    });
     final response = await http.post(
         Uri.parse("https://ubaya.fun/flutter/160419077/creatememe.php"),
         body: {
-          'pic_url': _pic_url,
-          'teks_atas': _teks_atas,
-          'teks_bawah': _teks_bawah,
-          'author_id': checkId()
+          'pic_url': urlPic,
+          'teks_atas': topText,
+          'teks_bawah': botText,
+          'author_id': _author_id.toString()
         });
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
@@ -205,7 +212,9 @@ class _CreateMemeState extends State<CreateMeme> {
                   },
                 )),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                onSubmit();
+              },
               child: Text(
                 'Submit',
                 style: TextStyle(color: Colors.white, fontSize: 25),
