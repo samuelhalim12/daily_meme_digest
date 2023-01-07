@@ -9,6 +9,7 @@ import 'package:daily_meme_digest/screen/settings.dart';
 
 String name = "";
 String activeuser = "";
+int author_id = 0;
 
 Future<String> checkUser() async {
   final prefs = await SharedPreferences.getInstance();
@@ -20,6 +21,12 @@ Future<String> checkName() async {
   final prefs = await SharedPreferences.getInstance();
   String full_name = prefs.getString("full_name") ?? '';
   return full_name;
+}
+
+Future<int> checkId() async {
+  final prefs = await SharedPreferences.getInstance();
+  int userID = prefs.getInt("id_user") ?? 0;
+  return userID;
 }
 
 void main() {
@@ -40,6 +47,9 @@ void main() {
       runApp(MyApp());
     }
   });
+  checkId().then((int result) {
+    author_id = result;
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +61,7 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(title: 'Daily Meme Digest'),
       routes: {
         'Home': (context) => Home(),
-        'MyCreation': (context) => MyCreation(),
+        'MyCreation': (context) => MyCreation(authorID: author_id,),
         'LeaderBoard': (context) => Leaderboard(),
         'Settings': (context) => Settings(),
         'creatememe': (context) => CreateMeme(),
@@ -73,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     Home(),
-    MyCreation(),
+    MyCreation(authorID: author_id,),
     Leaderboard(),
     Settings()
   ];

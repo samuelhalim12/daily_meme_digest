@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:daily_meme_digest/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_meme_digest/class/meme.dart';
@@ -19,7 +20,7 @@ class _CreateMemeState extends State<CreateMeme> {
   String topText = "";
   String botText = "";
   String urlPic = "https://ubaya.fun/blank.jpg";
-  late int _author_id;
+  // late int _author_id;
   @override
   void initState() {
     super.initState();
@@ -34,28 +35,26 @@ class _CreateMemeState extends State<CreateMeme> {
       pic_url: '',
       teks_atas: '',
       teks_bawah: '',
-      author_id: '',
+      author_id: 0,
       like_count: 0);
-  Future<int> checkId() async {
-    final prefs = await SharedPreferences.getInstance();
-    int userID = prefs.getInt("id_user") ?? 0;
-    return userID;
-  }
+  // Future<int> checkId() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   int userID = prefs.getInt("id_user") ?? 0;
+  //   return userID;
+  // }
 
   void onSubmit() async {
     WidgetsFlutterBinding.ensureInitialized();
     // _author_id = checkId().toString();
     // print(_author_id);
-    checkId().then((int result) {
-      _author_id = result;
-    });
+    
     final response = await http.post(
         Uri.parse("https://ubaya.fun/flutter/160419077/creatememe.php"),
         body: {
           'pic_url': urlPic,
           'teks_atas': topText,
           'teks_bawah': botText,
-          'author_id': _author_id.toString()
+          'author_id': author_id.toString()
         });
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
@@ -63,7 +62,7 @@ class _CreateMemeState extends State<CreateMeme> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MyCreation(),
+            builder: (context) => MyCreation(authorID: author_id,),
           ),
         );
       } else {
