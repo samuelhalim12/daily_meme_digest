@@ -18,10 +18,5 @@ class Meme {
       like_count: json['like_count'] as int
     );
   }
-
-  // @override
-  // String toString() {
-  //   return title;
-  // }
 }
 

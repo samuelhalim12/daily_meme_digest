@@ -14,51 +14,51 @@ class CreateMeme extends StatefulWidget {
   State<CreateMeme> createState() => _CreateMemeState();
 }
 
-class _CreateMemeState extends State<CreateMeme>{
-
-final _formKey = GlobalKey<FormState>();
+class _CreateMemeState extends State<CreateMeme> {
+  final _formKey = GlobalKey<FormState>();
+  String topText = "";
+  String botText = "";
+  String urlPic = "https://ubaya.fun/blank.jpg";
   @override
   void initState() {
     super.initState();
   }
-
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
 
   TextEditingController _pic_url = new TextEditingController();
   TextEditingController _teks_atas = new TextEditingController();
   TextEditingController _teks_bawah = new TextEditingController();
   late String error_submit;
   Meme meme = Meme(
-    id: 0,
-    pic_url: '',
-    teks_atas: '',
-    teks_bawah: '',
-    author_id: '',
-    like_count: 0
-  );
+      id: 0,
+      pic_url: '',
+      teks_atas: '',
+      teks_bawah: '',
+      author_id: '',
+      like_count: 0);
   Future<String> checkId() async {
-  final prefs = await SharedPreferences.getInstance();
-  String userID = prefs.getString("id_user") ?? '';
-  return userID;
-}
+    final prefs = await SharedPreferences.getInstance();
+    String userID = prefs.getString("id_user") ?? '';
+    return userID;
+  }
+
   void onSubmit() async {
     final response = await http.post(
         Uri.parse("https://ubaya.fun/flutter/160419077/creatememe.php"),
-        body: {'pic_url': _pic_url, 'teks_atas': _teks_atas, 'teks_bawah': _teks_bawah, 'author_id': checkId()});
+        body: {
+          'pic_url': _pic_url,
+          'teks_atas': _teks_atas,
+          'teks_bawah': _teks_bawah,
+          'author_id': checkId()
+        });
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
       if (json['result'] == 'success') {
         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  MyCreation(),
-                            ),
-                          );
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyCreation(),
+          ),
+        );
       } else {
         setState(() {
           error_submit = "Semua TextBox harus diisi!";
@@ -68,20 +68,85 @@ final _formKey = GlobalKey<FormState>();
       throw Exception('Failed to read API');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Create Your Meme"),
-        ),
-        body: Form(
+      appBar: AppBar(
+        title: Text("Create Your Meme"),
+      ),
+      body: Form(
           key: _formKey,
-            child: Column(
-          children: <Widget>[
+          child: Column(children: <Widget>[
             Text("preview"),
-            Image.network("https://ubaya.fun/flutter/160419077/images/1.jpg"),
-            
-          
+            SizedBox(
+              height: 50,
+            ),
+            SizedBox(
+              height: 14,
+            ),
+            RepaintBoundary(
+              key: _formKey,
+              child: Stack(children: <Widget>[
+                Image.network(
+                  urlPic,
+                  height: 300,
+                  fit: BoxFit.fitHeight,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          topText.toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 26,
+                              shadows: <Shadow>[
+                                Shadow(
+                                    offset: Offset(2.0, 2.0),
+                                    blurRadius: 3.0,
+                                    color: Colors.black87),
+                                Shadow(
+                                    offset: Offset(2.0, 2.0),
+                                    blurRadius: 8.0,
+                                    color: Colors.black87)
+                              ]),
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          botText.toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 26,
+                              shadows: <Shadow>[
+                                Shadow(
+                                    offset: Offset(2.0, 2.0),
+                                    blurRadius: 3.0,
+                                    color: Colors.black87),
+                                Shadow(
+                                    offset: Offset(2.0, 2.0),
+                                    blurRadius: 3.0,
+                                    color: Colors.black87)
+                              ]),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ]),
+            ),
             Padding(
                 padding: EdgeInsets.all(10),
                 child: TextFormField(
@@ -89,7 +154,9 @@ final _formKey = GlobalKey<FormState>();
                     labelText: 'image URL',
                   ),
                   onChanged: (value) {
-                    meme.pic_url = value;
+                    setState(() {
+                      urlPic = value;
+                    });
                   },
                   controller: _pic_url,
                   validator: (value) {
@@ -106,7 +173,9 @@ final _formKey = GlobalKey<FormState>();
                     labelText: 'Top Text',
                   ),
                   onChanged: (value) {
-                    meme.teks_atas = value;
+                    setState(() {
+                      topText = value;
+                    });
                   },
                   controller: _teks_atas,
                   validator: (value) {
@@ -123,7 +192,9 @@ final _formKey = GlobalKey<FormState>();
                     labelText: 'Bottom Text',
                   ),
                   onChanged: (value) {
-                    meme.teks_bawah = value;
+                    setState(() {
+                      botText = value;
+                    });
                   },
                   controller: _teks_bawah,
                   validator: (value) {
@@ -133,17 +204,14 @@ final _formKey = GlobalKey<FormState>();
                     return null;
                   },
                 )),
-                ElevatedButton(
-                    onPressed: () {
-                      
-                    },
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
-                  ),
-                ]))
-          ,
-        );
+            ElevatedButton(
+              onPressed: () {},
+              child: Text(
+                'Submit',
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ])),
+    );
   }
 }
