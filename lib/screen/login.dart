@@ -54,6 +54,7 @@ class _LoginState extends State<Login> {
         prefs.setString("user_id", _user_id);
         prefs.setString("full_name", json['name']);
         prefs.setString("user_name", json['username']);
+        prefs.setString("prof_pic_url", json['prof_pic_url']);
         main();
       } else {
         setState(() {
@@ -129,12 +130,11 @@ class _LoginState extends State<Login> {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CreateAccount(),
-                            ),
-                          );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateAccount(),
+                        ),
+                      );
                     },
                     child: Text(
                       'Create Account',

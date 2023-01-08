@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -73,11 +73,11 @@ class _HomeState extends State<Home> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      DetailMeme(memeID: memes[index].id),
+                                      DetailMeme(memeID: memes[index].id!),
                                 ));
                           },
                           child: Image.network(
-                            memes[index].pic_url,
+                            memes[index].pic_url!,
                             height: 300,
                             fit: BoxFit.fitHeight,
                           ),
@@ -91,7 +91,7 @@ class _HomeState extends State<Home> {
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Text(
-                                  memes[index].teks_atas.toUpperCase(),
+                                  memes[index].teks_atas!.toUpperCase(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white,
@@ -113,7 +113,7 @@ class _HomeState extends State<Home> {
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Text(
-                                  memes[index].teks_bawah.toUpperCase(),
+                                  memes[index].teks_bawah!.toUpperCase(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white,

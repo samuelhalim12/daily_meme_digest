@@ -71,7 +71,7 @@ class _MyCreationState extends State<MyCreation> {
                     RepaintBoundary(
                       child: Stack(children: <Widget>[
                         Image.network(
-                          memes[index].pic_url,
+                          memes[index].pic_url!,
                           height: 300,
                           fit: BoxFit.fitHeight,
                         ),
@@ -84,7 +84,7 @@ class _MyCreationState extends State<MyCreation> {
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Text(
-                                  memes[index].teks_atas.toUpperCase(),
+                                  memes[index].teks_atas!.toUpperCase(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white,
@@ -106,7 +106,7 @@ class _MyCreationState extends State<MyCreation> {
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 8),
                                 child: Text(
-                                  memes[index].teks_bawah.toUpperCase(),
+                                  memes[index].teks_bawah!.toUpperCase(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white,

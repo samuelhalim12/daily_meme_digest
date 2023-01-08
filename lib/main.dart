@@ -10,6 +10,7 @@ import 'package:daily_meme_digest/screen/settings.dart';
 String name = "";
 String activeuser = "";
 int author_id = 0;
+String prof_pic_url = "";
 
 Future<String> checkUser() async {
   final prefs = await SharedPreferences.getInstance();
@@ -27,6 +28,12 @@ Future<int> checkId() async {
   final prefs = await SharedPreferences.getInstance();
   int userID = prefs.getInt("id_user") ?? 0;
   return userID;
+}
+
+Future<String> checkURL() async {
+  final prefs = await SharedPreferences.getInstance();
+  String pic_url = prefs.getString("prof_pic_url") ?? '';
+  return pic_url;
 }
 
 void main() {
@@ -50,6 +57,9 @@ void main() {
   checkId().then((int result) {
     author_id = result;
   });
+  checkURL().then((String result) {
+    prof_pic_url = result;
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -61,9 +71,13 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(title: 'Daily Meme Digest'),
       routes: {
         'Home': (context) => Home(),
-        'MyCreation': (context) => MyCreation(authorID: author_id,),
+        'MyCreation': (context) => MyCreation(
+              authorID: author_id,
+            ),
         'LeaderBoard': (context) => Leaderboard(),
-        'Settings': (context) => Settings(),
+        'Settings': (context) => Settings(
+              authorID: author_id,
+            ),
         'creatememe': (context) => CreateMeme(),
       },
     );
@@ -83,9 +97,13 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     Home(),
-    MyCreation(authorID: author_id,),
+    MyCreation(
+      authorID: author_id,
+    ),
     Leaderboard(),
-    Settings()
+    Settings(
+      authorID: author_id,
+    )
   ];
 
   @override
@@ -144,8 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
           UserAccountsDrawerHeader(
               accountName: Text("$name"),
               accountEmail: Text("$activeuser"),
-              currentAccountPicture: CircleAvatar(
-                  backgroundImage: NetworkImage("https://i.pravatar.cc/150"))),
+              currentAccountPicture:
+                  CircleAvatar(backgroundImage: NetworkImage("$prof_pic_url"))),
           ListTile(
             title: new Text("Home"),
             leading: new Icon(Icons.home),
@@ -207,5 +225,6 @@ void doLogout() async {
   prefs.remove("user_id");
   prefs.remove("full_name");
   prefs.remove("id_user");
+  prefs.remove('prof_pic_url');
   main();
 }

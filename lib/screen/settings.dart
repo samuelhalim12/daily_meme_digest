@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:daily_meme_digest/class/meme.dart';
+import 'package:daily_meme_digest/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/animation/animation_controller.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -12,7 +16,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 class Settings extends StatefulWidget {
-  const Settings({super.key});
+  int authorID;
+  Settings({super.key, required this.authorID});
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -20,17 +25,46 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  TextEditingController _firstCont = new TextEditingController();
+  TextEditingController _lastCont = new TextEditingController();
+
+  Meme meme = Meme(author_id: 0, firstname: "", lastname: "", privacy: 0);
+
+  Future<String> fetchData() async {
+    final response = await http.post(
+        Uri.parse("https://ubaya.fun/flutter/160419077/profile.php"),
+        body: {'id': widget.authorID.toString()});
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
+  bacaData() {
+    fetchData().then((value) {
+      Map json = jsonDecode(value);
+      meme = Meme.fromJson(json['data']);
+      setState(() {
+        _firstCont.text = meme.firstname.toString();
+        _lastCont.text = meme.lastname.toString();
+      });
+    });
+  }
+
+  void changePrivacy() {}
+
+  File? _image, _imageProses;
   bool isChecked = false;
+  int privacy = 0;
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this);
+    bacaData();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -67,21 +101,41 @@ class _SettingsState extends State<Settings>
                           backgroundColor: Color(0xFFF5F6F9),
                         ),
                         onPressed: () {},
-                        child: Text("gss"),
+                        child: Icon(Icons.add_a_photo),
                       ),
                     ),
                   )
                 ],
               ),
             ),
-            Text("Nama"),
+            Text(""),
             Text("Active since"),
             Text("Username"),
             TextFormField(
               decoration: InputDecoration(labelText: "First Name"),
+              onChanged: (value) {
+                meme.firstname = value;
+              },
+              controller: _firstCont,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'nama depan harus diisi';
+                }
+                return null;
+              },
             ),
             TextFormField(
               decoration: InputDecoration(labelText: "Last Name"),
+              onChanged: (value) {
+                meme.lastname = value;
+              },
+              controller: _lastCont,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'nama depan harus diisi';
+                }
+                return null;
+              },
             ),
             Row(
               children: <Widget>[
@@ -90,7 +144,7 @@ class _SettingsState extends State<Settings>
                     onChanged: (value) {
                       setState(() {
                         isChecked = value!;
-                        print(isChecked);
+                        privacy = 1;
                       });
                     }),
                 Text("Hide my name"),

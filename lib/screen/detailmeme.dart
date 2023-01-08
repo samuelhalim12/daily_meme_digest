@@ -22,6 +22,7 @@ class _DetailMemeState extends State<DetailMeme> {
   String _coment = "";
   bool _like = false;
   List<Meme> memes = [];
+  List<Meme> memes2 = [];
   @override
   void initState() {
     super.initState();
@@ -46,6 +47,11 @@ class _DetailMemeState extends State<DetailMeme> {
         Meme mov = Meme.fromJson(movie);
         memes.add(mov);
       }
+      for (var movie2 in json['data2']) {
+        Meme mov2 = Meme.fromJson(movie2);
+        memes2.add(mov2);
+      }
+
       // _pa = PopActor.fromJson(json['data']);
       setState(() {});
     });
@@ -90,7 +96,7 @@ class _DetailMemeState extends State<DetailMeme> {
                 RepaintBoundary(
                   child: Stack(children: <Widget>[
                     Image.network(
-                      memes[0].pic_url,
+                      memes2[0].pic_url!,
                       height: 300,
                       fit: BoxFit.fitHeight,
                     ),
@@ -103,7 +109,7 @@ class _DetailMemeState extends State<DetailMeme> {
                           Container(
                             padding: EdgeInsets.symmetric(vertical: 8),
                             child: Text(
-                              memes[0].teks_atas.toUpperCase(),
+                              memes2[0].teks_atas!.toUpperCase(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
@@ -125,7 +131,7 @@ class _DetailMemeState extends State<DetailMeme> {
                           Container(
                             padding: EdgeInsets.symmetric(vertical: 8),
                             child: Text(
-                              memes[0].teks_bawah.toUpperCase(),
+                              memes2[0].teks_bawah!.toUpperCase(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
@@ -165,7 +171,7 @@ class _DetailMemeState extends State<DetailMeme> {
                         )
                       ],
                     ),
-                    Text(memes[0].like_count.toString() + " likes"),
+                    Text(memes2[0].like_count.toString() + " likes"),
                   ],
                 ),
               ],
@@ -175,17 +181,19 @@ class _DetailMemeState extends State<DetailMeme> {
             shrinkWrap: true,
             itemCount: memes.length,
             itemBuilder: (BuildContext ctxt, int index) {
-              return new Card(
-                elevation: 10,
-                margin: const EdgeInsets.all(10),
-                child: Text(memes[index].firstname!.toString() +
-                    ' ' +
-                    memes[index].lastname!.toString() +
-                    ' ' +
-                    memes[index].comment_date!.toString() +
-                    ' ' +
-                    memes[index].content.toString()),
-              );
+              return Card(
+                  elevation: 10,
+                  margin: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(memes[index].firstname!.toString() +
+                          " " +
+                          memes[index].lastname!.toString()),
+                      Text(memes[index].comment_date!.toString()),
+                      Text(memes[index].content.toString()),
+                    ],
+                  ));
             }),
         ListTile(
           title: TextFormField(
