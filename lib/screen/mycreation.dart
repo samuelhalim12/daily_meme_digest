@@ -57,105 +57,106 @@ class _MyCreationState extends State<MyCreation> {
           itemCount: popMovs.length,
           itemBuilder: (BuildContext ctxt, int index) {
             return new Card(
-              elevation: 10,
-              margin: const EdgeInsets.all(10),
+                elevation: 10,
+                margin: const EdgeInsets.all(10),
                 child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                // SizedBox(
-                //   height: 50,
-                // ),
-                // SizedBox(
-                //   height: 14,
-                // ),
-                RepaintBoundary(
-                  child: Stack(children: <Widget>[
-                    Image.network(
-                      memes[index].pic_url,
-                      height: 300,
-                      fit: BoxFit.fitHeight,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              memes[index].teks_atas.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 26,
-                                  shadows: <Shadow>[
-                                    Shadow(
-                                        offset: Offset(2.0, 2.0),
-                                        blurRadius: 3.0,
-                                        color: Colors.black87),
-                                    Shadow(
-                                        offset: Offset(2.0, 2.0),
-                                        blurRadius: 8.0,
-                                        color: Colors.black87)
-                                  ]),
-                            ),
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    // SizedBox(
+                    //   height: 50,
+                    // ),
+                    // SizedBox(
+                    //   height: 14,
+                    // ),
+                    RepaintBoundary(
+                      child: Stack(children: <Widget>[
+                        Image.network(
+                          memes[index].pic_url,
+                          height: 300,
+                          fit: BoxFit.fitHeight,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 300,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: Text(
+                                  memes[index].teks_atas.toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 26,
+                                      shadows: <Shadow>[
+                                        Shadow(
+                                            offset: Offset(2.0, 2.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black87),
+                                        Shadow(
+                                            offset: Offset(2.0, 2.0),
+                                            blurRadius: 8.0,
+                                            color: Colors.black87)
+                                      ]),
+                                ),
+                              ),
+                              Spacer(),
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: Text(
+                                  memes[index].teks_bawah.toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 26,
+                                      shadows: <Shadow>[
+                                        Shadow(
+                                            offset: Offset(2.0, 2.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black87),
+                                        Shadow(
+                                            offset: Offset(2.0, 2.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black87)
+                                      ]),
+                                ),
+                              )
+                            ],
                           ),
-                          Spacer(),
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              memes[index].teks_bawah.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 26,
-                                  shadows: <Shadow>[
-                                    Shadow(
-                                        offset: Offset(2.0, 2.0),
-                                        blurRadius: 3.0,
-                                        color: Colors.black87),
-                                    Shadow(
-                                        offset: Offset(2.0, 2.0),
-                                        blurRadius: 3.0,
-                                        color: Colors.black87)
-                                  ]),
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ]),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Icon(
-                          Icons.favorite,
-                          color: Colors.red,
                         )
+                      ]),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            )
+                          ],
+                        ),
+                        Align(
+                          child: Text(
+                              memes[index].like_count.toString() + " likes"),
+                          alignment: Alignment.centerLeft,
+                        ),
+                        Align(
+                          child: Text("5" + " comments"),
+                          alignment: Alignment.centerLeft,
+                        ),
+                        Align(
+                          child: Icon(Icons.comment, color: Colors.blue),
+                          alignment: Alignment.centerRight,
+                        ),
                       ],
-                    ),
-                    Align(
-                      child: Text(memes[index].like_count.toString() + " likes"),
-                      alignment: Alignment.centerLeft,
-                    ),
-                    Align(
-                      child: Text("5" + " comments"),
-                      alignment: Alignment.centerLeft,
-                    ),
-                    Align(
-                      child: Icon(Icons.comment, color: Colors.blue),
-                      alignment: Alignment.centerRight,
-                    ),
+                    )
                   ],
-                )
-              ],
-            ));
+                ));
           });
     } else {
       return CircularProgressIndicator();
@@ -166,15 +167,15 @@ class _MyCreationState extends State<MyCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("My Creation")),
-        body: ListView(children: [
-          Column(
+        body: SingleChildScrollView(
+          child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height / 2,
+                height: MediaQuery.of(context).size.height,
                 child: DaftarMemes(memes),
               ),
             ],
-          )
-        ]));
+          ),
+        ));
   }
 }

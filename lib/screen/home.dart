@@ -18,6 +18,7 @@ class _HomeState extends State<Home> {
   String _temp = 'waiting API respond…';
   List<Meme> memes = [];
   bool _like = false;
+  String comentCount = "";
   // Icon _icon_like = new Icon(Icons.favorite_outline);
 
   @override
@@ -25,6 +26,8 @@ class _HomeState extends State<Home> {
     super.initState();
     bacaData();
   }
+
+  void countComent() async {}
 
   Future<String> fetchData() async {
     final response = await http.post(
@@ -48,8 +51,6 @@ class _HomeState extends State<Home> {
           Meme mov = Meme.fromJson(movie);
           memes.add(mov);
         }
-        // _temp = movies[0].title;
-        // _temp = value;
       });
     });
   }
@@ -63,20 +64,23 @@ class _HomeState extends State<Home> {
                 elevation: 10,
                 margin: const EdgeInsets.all(10),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    // SizedBox(
-                    //   height: 50,
-                    // ),
-                    // SizedBox(
-                    //   height: 14,
-                    // ),
                     RepaintBoundary(
                       child: Stack(children: <Widget>[
-                        Image.network(
-                          memes[index].pic_url,
-                          height: 300,
-                          fit: BoxFit.fitHeight,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailMeme(memeID: memes[index].id),
+                                ));
+                          },
+                          child: Image.network(
+                            memes[index].pic_url,
+                            height: 300,
+                            fit: BoxFit.fitHeight,
+                          ),
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
@@ -133,7 +137,7 @@ class _HomeState extends State<Home> {
                       ]),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
                           children: [
@@ -150,31 +154,9 @@ class _HomeState extends State<Home> {
                             )
                           ],
                         ),
-                        Align(
-                          child: Text(
-                              memes[index].like_count.toString() + " likes"),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Align(
-                          child: Text("5" + " comments"),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Align(
-                          child: IconButton(
-                            icon: new Icon(Icons.comment),
-                            color: Colors.blue,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      DetailMeme(memeID: memes[index].id),
-                                ),
-                              );
-                            },
-                          ),
-                          alignment: Alignment.centerRight,
-                        ),
+                        Text(memes[index].like_count.toString() + " likes "),
+                        Text(comentCount.toString() + " comments"),
+                        Icon(Icons.comment, color: Colors.blue),
                       ],
                     )
                   ],
@@ -192,7 +174,7 @@ class _HomeState extends State<Home> {
       Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height,
             child: DaftarMemes(memes),
           ),
         ],
